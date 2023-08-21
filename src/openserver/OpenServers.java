@@ -4,14 +4,25 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import utils.FormatterUtil;
 
 public class OpenServers implements ActionListener {
 
@@ -89,10 +100,52 @@ public class OpenServers implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		String[] splitLine = textArea.getText().split("\\r?\\n");
-		FormatterUtil.storeFormatter(splitLine).forEach(System.out::println);
+	public void actionPerformed(ActionEvent action) {
 
+		String[] splitLine = textArea.getText().split("\\r?\\n");
+		String pathSource = "C:\\Users\\raulc\\openserver\\serversformatter\\serversHTML.txt";
+		String sourcePath = "C:\\Users\\tmp";
+
+		List<String> formatter = new ArrayList<>();
+
+		try (BufferedReader br = new BufferedReader(new FileReader(pathSource))) {
+
+			String read = br.readLine();
+			while (read != null) {
+				formatter.add(read);
+				read = br.readLine();
+			}
+
+		} catch (IOException e) {
+			System.out.println("File not finded: " + e.getMessage());
+		}
+
+//		List<String> storesFormatted = new ArrayList<>();
+
+		FormatterUtil.replace(FormatterUtil.storeFormatter(splitLine), formatter);
+
+		boolean createFile = false;
+		try {
+			createFile = new File(sourcePath + "\\out.txt").createNewFile();
+		} catch (IOException e) {
+			System.out.println("File not created: " + e.getMessage());
+		}
+
+		if (createFile) {
+			JOptionPane.showMessageDialog(null, "File created with successfully!");
+		}
+
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(sourcePath, true))) {
+
+			for (String line : formatter) {
+				bw.write(line);
+				bw.newLine();
+				System.out.println("\n\n");
+			}
+
+		} catch (IOException e) {
+			System.out.println("Error writter: " + e.getMessage());
+		}
 	}
 
 }
