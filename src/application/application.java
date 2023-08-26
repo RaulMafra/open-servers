@@ -106,10 +106,10 @@ public class application implements ActionListener {
 	public void actionPerformed(ActionEvent action) {
 
 		String[] storesFull = textArea.getText().split("\\r?\\n");
-		
+
 		Collections.sort(Arrays.asList(storesFull));
 		System.out.println(Arrays.toString(storesFull));
-		
+
 		String sourcePath = "C:\\Users\\raulc\\openserver\\bin\\LOGIN_SERVERS";
 		String targetPath = null;
 
@@ -128,8 +128,9 @@ public class application implements ActionListener {
 		}
 
 		for (String store : storesFull) {
+			List<String> rawList = new ArrayList<>(formatter);
 
-			data.replace(store, formatter);
+			data.replace(store, rawList);
 
 			boolean createFile = false;
 			try {
@@ -146,7 +147,7 @@ public class application implements ActionListener {
 
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetPath, true))) {
 
-				for (String line : formatter) {
+				for (String line : rawList) {
 					bw.write(line);
 					bw.newLine();
 					System.out.println("\n\n");
