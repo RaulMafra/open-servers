@@ -1,8 +1,9 @@
 package model.util;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class HandleData {
+public class  HandleData {
 
 	private String splitStoreName(String store) {
 		String[] split = store.split(",");
@@ -12,27 +13,13 @@ public class HandleData {
 	}
 
 	public List<String> replace(String storeFull, List<String> formatter) {
-		String StoreName = splitStoreName(storeFull);
 
 		String line = null;
-		String newLine = null;
-		
-		for (int i = 0; i < 3; i++) {
-			if (i == 1) {
-				line = formatter.get(1);
-				newLine = line.replace(line.substring(6, 9), StoreName);
-				formatter.set(1, newLine);
+		String StoreName = splitStoreName(storeFull);
 
-			}
-			if (i == 2) {
-				line = formatter.get(2);
-				newLine = line.replace(line.substring(13, 16), StoreName);
-				if (newLine.substring(20, 23).equals(StoreName)) {
-					newLine = newLine.replace(newLine.substring(20, 23), "MAR");
-				}
-				formatter.set(2, newLine);
-			}
-
+		for (int i = 1; i < 3; i++) {
+			line = formatter.get(i);
+			formatter.set(i, Pattern.compile("XXX").matcher(line).replaceAll(StoreName));
 		}
 
 		return formatter;
