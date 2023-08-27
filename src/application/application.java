@@ -4,60 +4,51 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import model.util.HandleData;
+import model.util.HandlingFile;
 
-public class application implements ActionListener {
+public class Application implements ActionListener {
 
 	private JFrame Jframe = new JFrame();
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private ButtonGroup buttonGroup = new ButtonGroup();
 	private JPanel Jpanel = new JPanel();
 	private JLabel Jlabel = new JLabel();
 	private JButton criar = new JButton();
 	private JButton limpar = new JButton();
 	private JTextArea textArea = new JTextArea();
-	HandleData data = new HandleData();
 	private JScrollPane scrollPane = new JScrollPane();
 
 	/**
 	 * Launch the application.
+	 * 
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					application window = new application();
-					window.Jframe.setVisible(true);
+					Application application = new Application();
+					application.Jframe.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+
 	}
 
 	/**
 	 * Create the application.
+	 * 
 	 */
-	public application() {
+	public Application() {
 		initialize();
 
 	}
@@ -65,7 +56,7 @@ public class application implements ActionListener {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	public void initialize() {
 		Jframe = new JFrame();
 		Jframe.setBounds(100, 100, 275, 422);
 		Jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -99,64 +90,21 @@ public class application implements ActionListener {
 		scrollPane.setViewportView(textArea);
 
 		criar.addActionListener(this);
+		limpar.addActionListener(this);
 
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent action) {
-
+	public void actionPerformed(ActionEvent e) {
+		
 		String[] storesFull = textArea.getText().split("\\r?\\n");
+		
+		textArea.setText("");
 
-		Collections.sort(Arrays.asList(storesFull));
-		System.out.println(Arrays.toString(storesFull));
+		HandlingFile.reader();
 
-		String sourcePath = "C:\\Users\\raulc\\openserver\\bin\\LOGIN_SERVERS";
-		String targetPath = null;
+		HandlingFile.writter(storesFull);
 
-		List<String> formatter = new ArrayList<>();
-
-		try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
-
-			String read = br.readLine();
-			while (read != null) {
-				formatter.add(read);
-				read = br.readLine();
-			}
-
-		} catch (IOException e) {
-			System.out.println("File not finded: " + e.getMessage());
-		}
-
-		for (String store : storesFull) {
-			List<String> rawList = new ArrayList<>(formatter);
-
-			data.replace(store, rawList);
-
-			boolean createFile = false;
-			try {
-				createFile = new File("C:\\Users\\tmp\\out.txt").createNewFile();
-				targetPath = "C:\\Users\\tmp\\out.txt";
-
-			} catch (IOException e) {
-				System.out.println("File not created: " + e.getMessage());
-			}
-
-			if (createFile) {
-				JOptionPane.showMessageDialog(null, "File created with successfully!");
-			}
-
-			try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetPath, true))) {
-
-				for (String line : rawList) {
-					bw.write(line);
-					bw.newLine();
-					System.out.println("\n\n");
-				}
-
-			} catch (IOException e) {
-				System.out.println("Error writter: " + e.getMessage());
-			}
-		}
 	}
 
 }
