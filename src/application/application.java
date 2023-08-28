@@ -4,16 +4,19 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import model.util.HandlingFile;
+import exceptions.HandlingDataException;
+import model.service.HandlingData;
 
 public class Application implements ActionListener {
 
@@ -30,7 +33,9 @@ public class Application implements ActionListener {
 	 * Launch the application.
 	 * 
 	 */
+
 	public static void main(String[] args) {
+		Locale.setDefault(Locale.US);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -95,15 +100,28 @@ public class Application implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		String[] storesFull = textArea.getText().split("\\r?\\n");
-		
-		textArea.setText("");
+	public void actionPerformed(ActionEvent event) {
 
-		HandlingFile.reader();
+		try {
 
-		HandlingFile.writter(storesFull);
+			if (event.getActionCommand().equals("Limpar")) {
+				textArea.setText("");
+			} else {
+				String[] storesFull = textArea.getText().split("\\r?\\n");
+
+				HandlingData.store(storesFull);
+			}
+			
+		} catch (HandlingDataException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+		}
+		catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, "Incorrect value, please enter a value in the format \"xxx,yyy\", where 'x' is the store number and 'y' is the store name",
+					null, JOptionPane.ERROR_MESSAGE);
+		}
+		catch(IndexOutOfBoundsException e) {
+			JOptionPane.showMessageDialog(null, "File size smaller than expected", null, JOptionPane.ERROR_MESSAGE);
+		}
 
 	}
 
