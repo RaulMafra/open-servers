@@ -1,5 +1,6 @@
 package model.util;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,15 +12,20 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import model.entity.Store;
+import model.service.HandlingData;
+
 public class HandlingFile {
 
 	private static List<String> formatter;
-	private static String targetPath;
-	
-	public static List<String> reader() {
+
+	private static File extensionTXT = null;
+	private static File extensionRDG = new File("C:\\PRIMARYs\\Primary.rgd");
+
+	private static List<String> reader() {
 		formatter = new ArrayList<>();
 
-		String sourcePath = "C:\\Users\\raulc\\openserver\\bin\\LOGIN_SERVERS";
+		String sourcePath = "C:\\PRIMARYs\\Primary.jar\\LOGIN_SERVERS";
 
 		try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
 
@@ -30,43 +36,67 @@ public class HandlingFile {
 			}
 
 		} catch (IOException e) {
-			System.out.println("File not finded: " + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Server formatting file not found", null, JOptionPane.ERROR_MESSAGE);
 		}
+
 		return formatter;
 	}
-	
 
-	public static void writter(String[] storesFull) {
-		for (String store : storesFull) {
+	public static void writter(List<Store> stores) {
+		reader();
+		for (Store store : stores) {
+
 			List<String> rawList = new ArrayList<>(formatter);
 
 			HandlingData.replace(store, rawList);
 
+			extensionTXT = new File("C:\\PRIMARYs\\Primary.txt");
 			boolean createFile = false;
 			try {
-				createFile = new File("C:\\Users\\tmp\\out.txt").createNewFile();
-				targetPath = "C:\\Users\\tmp\\out.txt";
-
+				do {
+					createFile = extensionTXT.createNewFile();
+					if (createFile) {
+						JOptionPane.showMessageDialog(null, "File created with successfully!");
+					}
+					if (extensionRDG.exists()) {
+						extensionRDG.delete();
+						createFile = extensionTXT.createNewFile();
+					}
+					createFile = true;
+				} while (createFile == false);
 			} catch (IOException e) {
-				System.out.println("File not created: " + e.getMessage());
+				JOptionPane.showMessageDialog(null, "File not created: " + e.getMessage(), null,
+						JOptionPane.ERROR_MESSAGE);
 			}
 
-			if (createFile) {
-				JOptionPane.showMessageDialog(null, "File created with successfully!");
-			}
-
-			try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetPath, true))) {
+			try (BufferedWriter bw = new BufferedWriter(new FileWriter(extensionTXT, true))) {
 
 				for (String line : rawList) {
 					bw.write(line);
 					bw.newLine();
-					System.out.println("\n\n");
 				}
+				bw.newLine();
+				bw.flush();
 
 			} catch (IOException e) {
-				System.out.println("Error writter: " + e.getMessage());
+				JOptionPane.showMessageDialog(null, "Error in writing: " + e.getMessage(), null,
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		openPrimary(extensionTXT);
+	}
+
+	private static void openPrimary(File targetPath) {
+
+		if (targetPath.renameTo(extensionRDG)) {
+			try {
+				Desktop.getDesktop().open(extensionRDG);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+			}
+
+		}
+
 	}
 
 }
