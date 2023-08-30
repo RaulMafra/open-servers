@@ -25,7 +25,7 @@ public class HandlingFile {
 	private static List<String> reader() {
 		formatter = new ArrayList<>();
 
-		String sourcePath = "C:\\PRIMARYs\\Primary.jar\\LOGIN_SERVERS";
+		String sourcePath = "C:\\PRIMARYs\\LOGIN_SERVERS";
 
 		try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
 
