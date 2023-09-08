@@ -24,10 +24,10 @@ public class Application implements ActionListener {
 	private ButtonGroup buttonGroup = new ButtonGroup();
 	private JPanel Jpanel = new JPanel();
 	private JLabel Jlabel = new JLabel();
-	private JButton criar = new JButton();
-	private JButton limpar = new JButton();
-	private JTextArea textArea = new JTextArea();
-	private JScrollPane scrollPane = new JScrollPane();
+	private JButton Jcreate = new JButton();
+	private JButton Jclear = new JButton();
+	private JTextArea JtextArea = new JTextArea();
+	private JScrollPane JscrollPane = new JScrollPane();
 
 	/**
 	 * Launch the application.
@@ -63,8 +63,10 @@ public class Application implements ActionListener {
 	 */
 	public void initialize() {
 		Jframe = new JFrame();
-		Jframe.setBounds(100, 100, 275, 422);
 		Jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Jframe.setTitle("PRIMARYs");
+		Jframe.setResizable(false);
+		Jframe.setBounds(100, 100, 275, 422);
 		Jframe.getContentPane().setLayout(null);
 
 		Jpanel = new JPanel();
@@ -72,30 +74,30 @@ public class Application implements ActionListener {
 		Jframe.getContentPane().add(Jpanel);
 		Jpanel.setLayout(null);
 
-		Jlabel = new JLabel("Lojas");
+		Jlabel = new JLabel("Stores");
 		Jlabel.setBounds(79, 11, 46, 14);
 		Jpanel.add(Jlabel);
 		Jlabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 
-		limpar = new JButton("Limpar");
-		limpar.setBounds(160, 186, 89, 23);
-		Jpanel.add(limpar);
-		buttonGroup.add(limpar);
+		Jclear = new JButton("Clear");
+		Jclear.setBounds(160, 186, 89, 23);
+		Jpanel.add(Jclear);
+		buttonGroup.add(Jclear);
 
-		criar = new JButton("Criar");
-		criar.setBounds(160, 127, 89, 23);
-		Jpanel.add(criar);
-		buttonGroup.add(criar);
+		Jcreate = new JButton("Create");
+		Jcreate.setBounds(160, 127, 89, 23);
+		Jpanel.add(Jcreate);
+		buttonGroup.add(Jcreate);
 
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(47, 36, 101, 303);
-		Jpanel.add(scrollPane);
+		JscrollPane = new JScrollPane();
+		JscrollPane.setBounds(47, 36, 101, 303);
+		Jpanel.add(JscrollPane);
 
-		textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
+		JtextArea = new JTextArea();
+		JscrollPane.setViewportView(JtextArea);
 
-		criar.addActionListener(this);
-		limpar.addActionListener(this);
+		Jcreate.addActionListener(this);
+		Jclear.addActionListener(this);
 
 	}
 
@@ -105,9 +107,9 @@ public class Application implements ActionListener {
 		try {
 
 			if (event.getActionCommand().equals("Limpar")) {
-				textArea.setText("");
+				JtextArea.setText("");
 			} else {
-				String[] storesFull = textArea.getText().split("\\r?\\n");
+				String[] storesFull = JtextArea.getText().split("\\r?\\n");
 
 				HandlingData.store(storesFull);
 			}
