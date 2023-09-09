@@ -25,7 +25,7 @@ public class HandlingFile {
 	private static List<String> reader() {
 		formatter = new ArrayList<>();
 
-		String sourcePath = "C:\\PRIMARYs\\LOGIN_SERVERS";
+		String sourcePath = "C:\\PRIMARYs\\SERVIDORES.xml";
 
 		try (BufferedReader br = new BufferedReader(new FileReader(sourcePath))) {
 
@@ -42,48 +42,83 @@ public class HandlingFile {
 		return formatter;
 	}
 
-	public static void writter(List<Store> stores) {
+	public static void writterMiddleXML(List<Store> stores) {
 		reader();
-		for (Store store : stores) {
-
-			List<String> rawList = new ArrayList<>(formatter);
-
-			HandlingData.replace(store, rawList);
-
-			extensionTXT = new File("C:\\PRIMARYs\\Primary.txt");
-			boolean createFile = false;
-			try {
-				do {
+		extensionTXT = new File("C:\\PRIMARYs\\Primary.txt");
+		boolean createFile = false;
+		try {
+			do {
+				createFile = extensionTXT.createNewFile();
+				if (createFile) {
+					JOptionPane.showMessageDialog(null, "File created with successfully!");
+				}
+				if (extensionRDG.exists()) {
+					extensionRDG.delete();
 					createFile = extensionTXT.createNewFile();
-					if (createFile) {
-						JOptionPane.showMessageDialog(null, "File created with successfully!");
-					}
-					if (extensionRDG.exists()) {
-						extensionRDG.delete();
-						createFile = extensionTXT.createNewFile();
-					}
-					createFile = true;
-				} while (createFile == false);
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "File not created: " + e.getMessage(), null,
-						JOptionPane.ERROR_MESSAGE);
-			}
+				}
+				createFile = true;
+			} while (createFile == false);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "File not created: " + e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+		}
+
+		List<String> upsideXML = formatter.subList(0, 13);
+		List<String> bottomXML = formatter.subList(25, 30);
+
+		writterUpsideXML(upsideXML);
+
+		for (Store store : stores) {
+			List<String> middleXML = new ArrayList<>(formatter.subList(13, 25));
+
+			HandlingData.replace(store, middleXML);
 
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(extensionTXT, true))) {
 
-				for (String line : rawList) {
+				for (String line : middleXML) {
 					bw.write(line);
 					bw.newLine();
 				}
-				bw.newLine();
 				bw.flush();
 
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Error in writing: " + e.getMessage(), null,
+				JOptionPane.showMessageDialog(null, "Error in writing middle xml: " + e.getMessage(), null,
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		writterBottomXML(bottomXML);
 		openPrimary(extensionTXT);
+	}
+
+	private static void writterUpsideXML(List<String> upsideXML) {
+
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(extensionTXT, true))) {
+
+			for (String line : upsideXML) {
+				bw.write(line);
+				bw.newLine();
+			}
+			bw.flush();
+
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Error in writing top xml: " + e.getMessage(), null,
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private static void writterBottomXML(List<String> bottomXML) {
+
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(extensionTXT, true))) {
+
+			for (String line : bottomXML) {
+				bw.write(line);
+				bw.newLine();
+			}
+			bw.flush();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Error in writing bottom xml: " + e.getMessage(), null,
+					JOptionPane.ERROR_MESSAGE);
+		}
+
 	}
 
 	private static void openPrimary(File targetPath) {
