@@ -106,7 +106,7 @@ public class Application implements ActionListener {
 
 		try {
 
-			if (event.getActionCommand().equals("Limpar")) {
+			if (event.getActionCommand().equals("Clear")) {
 				JtextArea.setText("");
 			} else {
 				String[] storesFull = JtextArea.getText().split("\\r?\\n");
